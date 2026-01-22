@@ -50,17 +50,19 @@ def webhook():
         return response
     
 def verificar_token(req):
+    mode = req.args.get('hub.mode')
     token = req.args.get('hub.verify_token')
     challenge = req.args.get('hub.challenge')
-    if challenge and token == TOKEN_ANDERCODE:
-        return challenge
+
+    if mode == 'subscribe' and token == TOKEN_ANDERCODE:
+        return challenge, 200
     else:
-        return jsonify({'error': 'Token de verificación inválido'}), 401
+        return jsonify({'error': 'Token de verificación inválido'}), 403
 
 def recibir_mensaje(req):
     req = request.get_json()
     agregar_mensajes_log(req)
-    
+
     return jsonify({'message': 'EVENT_RECEIVED'})
 
 if __name__ == '__main__':
