@@ -1,6 +1,7 @@
 from flask import Flask,request,Response,jsonify,json,render_template
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import http.client
 
 app = Flask(__name__)
 #configuracion de la bse de datos
@@ -83,16 +84,58 @@ def recibir_mensaje(req):
                     texto_mensaje = messages['text']['body']
                     numero_telefono = messages['from']
                     agregar_mensajes_log(json.dumps(texto_mensaje))
-                    agregar_mensajes_log(json.dumps(numero_telefono))
-
+                    agregar_mensajes_log(json.dumps(texto_mensaje))            
                     
-                    
-             # Aquí puedes procesar el mensaje recibido según tus necesidades
-
-        
+             # Aquí puedes procesar el mensaje recibido según tus necesidades        
         return jsonify({'messages': 'EVENT_RECEIVED'}), 200
     except Exception as e:
         return jsonify({'messages': 'EVENT_RECEIVED'}), 200
 
+
+def enviar_respuesta_whatsapp(texto,number):
+        texto = texto.lower()
+
+        if "hola" in texto:
+            data={
+                  "messaging_product": "whatsapp",    
+                  "recipient_type": "individual",
+                  "to": number,
+                  "type": "text",
+                  "text": {
+                      "preview_url": False,
+                      "body": "Hola, ¿Como estas? Bienvenido?"}
+                      }
+        else:
+            data={
+                  "messaging_product": "whatsapp",    
+                  "recipient_type": "individual",
+                  "to": number,
+                  "type": "text",
+                  "text": {
+                      "preview_url": False,
+                      "body": "Hola visita nuestro sitio web https://andercode.net\n¿En qué puedo ayudarte?\n1. Soporte Técnico\n2. Ventas\n3. Otros"}
+                      }
+        # Convertir el diccionario a una cadena JSON
+        data = json.dumps(data)
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer EAAT3fcXOGLoBQo6KOO1ELp6wpf30ElDLV2xX8owNT8StvSkTWxb7mZAZAACYuQjiCri9v9XBZC22ot74nq8FJtgUc5ON4YInbWTBB7tHkN4w0g5ErFqXrqULXt4ZB7GDJDSJ95hoNp4VMlpcpjbbvQjqDHcfUCLUar6KhCbTsTDDZC45su6qd1wTl5mP29gLuluq9LLsePsN1HGjL169KxBtvdA10MeVJpdzRmG7Yhw3z2BjVlkOQsNBwtzv7AKBPbfLv6FsZAoZCLSqyZCzuZC0KGX4YrqnEVhPg"
+            }
+        
+        conn = http.client.HTTPSConnection("graph.facebook.com")
+
+        try:
+            conn.request("POST", "/v22.0/357096730823962/messages", data, headers)
+            response = conn.getresponse()
+            print(response.status, response.reason)
+            
+            
+            
+        except Exception as e:
+            agregar_mensajes_log(json.dumps(e))
+        finally:
+            conn.close()
+        
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
