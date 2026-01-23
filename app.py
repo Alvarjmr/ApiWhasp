@@ -136,6 +136,15 @@ def enviar_respuesta_whatsapp(texto,number):
                       "caption": "Aquí está el documento que solicitaste."
                   }
                 }
+        elif "4" in texto:
+            data={
+                 "messaging_product": "whatsapp",
+                 "to": number,
+                "text": {
+                "preview_url": True,
+                "body": "Please visit https://www.youtube.com/watch?v=RB-RcX5DS5A&list=RDRB-RcX5DS5A&start_radio=1"      
+                 }
+               }
         else:
             data={
                   "messaging_product": "whatsapp",    
@@ -144,7 +153,7 @@ def enviar_respuesta_whatsapp(texto,number):
                   "type": "text",
                   "text": {
                       "preview_url": False,
-                      "body": "Hola visita nuestro sitio web https://andercode.net\n¿En qué puedo ayudarte?\n1. Soporte Técnico\n2. Ventas\n3. Otros"}
+                      "body": "Hola visita nuestro sitio web https://andercode.net\n¿En qué puedo ayudarte?\n1. Soporte Técnico\n2. Ventas\n3. Otros\n4. Ver un video"}
                       }
         # Convertir el diccionario a una cadena JSON
         data = json.dumps(data)
