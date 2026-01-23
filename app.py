@@ -1,4 +1,4 @@
-from flask import Flask,request,Response,jsonify,render_template
+from flask import Flask,request,Response,jsonify,json,render_template
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -32,8 +32,12 @@ def index():
 mensajes_log = []
 #funcion para agregar mensajes al log
 def agregar_mensajes_log(texto):
+    # si llega un dict (webhook), lo convertimos a JSON
+    if isinstance(texto, (dict, list)):
+        texto = json.dumps(texto, ensure_ascii=False, indent=2)
+
     mensajes_log.append(texto)
-    #guardamos el mensaje en la base de datos
+
     nuevo_registro = log(texto=texto)
     db.session.add(nuevo_registro)
     db.session.commit()
