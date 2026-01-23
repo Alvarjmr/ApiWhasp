@@ -16,8 +16,7 @@ class log(db.Model):
     texto= db.Column(db.TEXT)
 #creacion de la base de datos
 with app.app_context():
-    db.create_all()
-   
+    db.create_all()   
 
 #funcion para ordenar los registros por fecha y hora
 def ordenar_logs_por_fecha(logs):   
@@ -74,14 +73,19 @@ def recibir_mensaje(req):
             messages = objeto_mensajes[0]
 
             if "type" in messages:
+                # guadar log en DB 
                 tipo_mensaje = messages['type']
+                agregar_mensajes_log(json.dumps(tipo_mensaje))
 
                 if tipo_mensaje == 'interactive':
                     return 0
                 if "text" in messages:
                     texto_mensaje = messages['text']['body']
                     numero_telefono = messages['from']
-                    enviar_respuesta_whatsapp(texto_mensaje,numero_telefono)            
+                    enviar_respuesta_whatsapp(texto_mensaje,numero_telefono)
+                    # guadar log en DB 
+                    agregar_mensajes_log(json.dumps(messages))
+                                                 
                     
              # Aquí puedes procesar el mensaje recibido según tus necesidades        
         return jsonify({'messages': 'EVENT_RECEIVED'}), 200
@@ -145,6 +149,47 @@ def enviar_respuesta_whatsapp(texto,number):
                 "body": "Please visit https://www.youtube.com/watch?v=RB-RcX5DS5A&list=RDRB-RcX5DS5A&start_radio=1"      
                  }
                }
+        elif "boton" in texto:
+            data={
+                 "messaging_product": "whatsapp",
+                 "to": number,
+                 "text": "interactive", 
+                 "interactive": {
+                     "type": "button",
+                     "body": {
+                         "text": "¿Confirmar tu registro?"
+                     },
+                     "footer": {
+                         "text": "Seleccione una opciónes"
+                 },
+                     "action": {
+                            "buttons": [
+                                {
+                                    "type": "reply",
+                                    "reply": {
+                                        "id": "btnsi",
+                                        "title": "Si"
+                                    }
+                                },
+                                {
+                                    "type": "reply",
+                                    "reply": {
+                                        "id": "btnno",
+                                        "title": "No"
+                                    }
+                                },
+                                {
+                                    "type": "reply",
+                                    "reply": {
+                                        "id": "bttalvez",
+                                        "title": "Tal vez"
+                                    }
+                                }
+                            ]
+                         
+                     }
+                 }
+        }
         else:
             data={
                   "messaging_product": "whatsapp",    
@@ -168,8 +213,7 @@ def enviar_respuesta_whatsapp(texto,number):
         try:
             conn.request("POST", "/v22.0/357096730823962/messages", data, headers)
             response = conn.getresponse()
-            print(response.status, response.reason)
-            
+            print(response.status, response.reason)          
             
             
         except Exception as e:
