@@ -83,8 +83,7 @@ def recibir_mensaje(req):
                 if "text" in messages:
                     texto_mensaje = messages['text']['body']
                     numero_telefono = messages['from']
-                    agregar_mensajes_log(json.dumps(texto_mensaje))
-                    agregar_mensajes_log(json.dumps(texto_mensaje))            
+                    enviar_respuesta_whatsapp(texto_mensaje,numero_telefono)            
                     
              # Aquí puedes procesar el mensaje recibido según tus necesidades        
         return jsonify({'messages': 'EVENT_RECEIVED'}), 200
