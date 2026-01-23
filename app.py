@@ -1,4 +1,4 @@
-from flask import Flask,request,jsonify,render_template
+from flask import Flask,request,Response,jsonify,render_template
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -42,26 +42,24 @@ def agregar_mensajes_log(texto):
 TOKEN_ANDERCODE = 'ANDERCODE'
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
-    #if request.method == 'GET':
-        #challenge = verificar_token(request)
-        #return challenge
-    #elif request.method == 'POST':
-        #response = recibir_mensaje(request)
-        return 0
+    if request.method == 'GET':
+        return verificar_token(request)
+    elif request.method == 'POST':
+        return recibir_mensaje(request)
 
 def verificar_token(req):
-    #token = req.args.get('HUB.VERIFY_TOKEN')
-    #challenge = req.args.get('HUB.CHALLENGE')
-    
-    #if challenge and token == TOKEN_ANDERCODE:
-        return 0
-    #else:
-        #return jsonify({'error': 'Token de verificación inválido'}), 403
+    token = req.args.get('hub.verify_token')
+    challenge = req.args.get('hub.challenge')
+
+    if token == TOKEN_ANDERCODE:
+        return Response(challenge, status=200, mimetype='text/plain')
+    else:
+        return Response('Token inválido', status=403)
 
 def recibir_mensaje(req):
-    #req = request.get_json()
-    #agregar_mensajes_log(req)
-    return 0
+    data = req.get_json()
+    agregar_mensajes_log(data)
+    return jsonify({'status': 'EVENT_RECEIVED'}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=80,debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
