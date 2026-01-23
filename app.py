@@ -132,7 +132,7 @@ def enviar_respuesta_whatsapp(texto,number):
                   "to": number,
                   "type": "document",
                   "document": {
-                      "link": "https://andercode.net/documento.pdf",
+                      "link": "https://www.renfe.com/content/dam/renfe/es/General/PDF-y-otros/Ejemplo-de-descarga-pdf.pdf",
                       "caption": "Aquí está el documento que solicitaste."
                   }
                 }
