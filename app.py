@@ -62,9 +62,7 @@ def verificar_token(req):
         return Response('Token inválido', status=403)
 
 def recibir_mensaje(req):
-    #data = req.get_json()
-    #agregar_mensajes_log(data)
-
+    
     try:
         data = req.get_json()
         entry = data['entry'][0]
@@ -104,6 +102,40 @@ def enviar_respuesta_whatsapp(texto,number):
                       "preview_url": False,
                       "body": "Hola, ¿Como estas? Bienvenido?"}
                       }
+        elif "1" in texto:
+            data={
+                  "messaging_product": "whatsapp",    
+                  "recipient_type": "individual",
+                  "to": number,
+                  "type": "text",
+                  "text": {
+                      "preview_url": False,
+                      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."}
+                      }
+        elif "2" in texto:
+            data={
+                  "messaging_product": "whatsapp",
+                  "recipient_type": "individual",
+                  "to": number,
+                  "type": "location",
+                  "location": {
+                  "latitude": "6.265970723356335",
+                  "longitude": "-75.55436370445392",
+                  "name": "domino",
+                  "address": "medellin"
+                }
+                }
+        elif "3" in texto:
+            data={
+                  "messaging_product": "whatsapp",    
+                  "recipient_type": "individual",
+                  "to": number,
+                  "type": "document",
+                  "document": {
+                      "link": "https://andercode.net/documento.pdf",
+                      "caption": "Aquí está el documento que solicitaste."
+                  }
+                }
         else:
             data={
                   "messaging_product": "whatsapp",    
