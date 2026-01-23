@@ -70,7 +70,26 @@ def recibir_mensaje(req):
         changes = entry['changes'][0]
         value = changes['value']
         objeto_mensajes = value['messages']
-        agregar_mensajes_log(json.dumps(objeto_mensajes))
+
+        if objeto_mensajes:
+            messages = objeto_mensajes[0]
+
+            if "type" in messages:
+                tipo_mensaje = messages['type']
+
+                if tipo_mensaje == 'interactive':
+                    return 0
+                if "text" in messages:
+                    texto_mensaje = messages['text']['body']
+                    numero_telefono = messages['from']
+                    agregar_mensajes_log(json.dumps(texto_mensaje))
+                    agregar_mensajes_log(json.dumps(numero_telefono))
+
+                    
+                    
+             # Aquí puedes procesar el mensaje recibido según tus necesidades
+
+        
         return jsonify({'messages': 'EVENT_RECEIVED'}), 200
     except Exception as e:
         return jsonify({'messages': 'EVENT_RECEIVED'}), 200
