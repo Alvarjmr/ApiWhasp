@@ -149,7 +149,37 @@ def enviar_respuesta_whatsapp(texto,number):
                 "body": "Please visit https://www.youtube.com/watch?v=RB-RcX5DS5A&list=RDRB-RcX5DS5A&start_radio=1"      
                  }
                }
-        
+        elif "boton" in texto:
+            data={
+                  "messaging_product": "whatsapp",    
+                  "recipient_type": "individual",
+                  "to": number,
+                  "type": "interactive",
+                  "interactive": {
+                      "type": "button",
+                      "body": {
+                          "text": "Elige una opción:"
+                      },
+                      "action": {
+                          "buttons": [
+                              {
+                                  "type": "reply",
+                                  "reply": {
+                                      "id": "option_1",
+                                      "title": "Opción 1"
+                                  }
+                              },
+                              {
+                                  "type": "reply",
+                                  "reply": {
+                                      "id": "option_2",
+                                      "title": "Opción 2"
+                                  }
+                              }
+                          ]
+                      }
+                  }
+              }
         else:
             data={
                   "messaging_product": "whatsapp",    
