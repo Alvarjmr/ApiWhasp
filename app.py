@@ -83,7 +83,12 @@ def recibir_mensaje(req):
                     if tipo_interactivo == 'button_reply':
                         texto_mensaje = messages['interactive']['button_reply']['id']
                         numero_telefono = messages['from']
-                        enviar_respuesta_whatsapp(texto_mensaje,numero_telefono)                  
+                        enviar_respuesta_whatsapp(texto_mensaje,numero_telefono)
+
+                    elif tipo_interactivo == 'list_reply':
+                        texto_mensaje = messages['interactive']['list_reply']['id']
+                        numero_telefono = messages['from']
+                        enviar_respuesta_whatsapp(texto_mensaje,numero_telefono)                
 
                     
                 if "text" in messages:
@@ -210,7 +215,6 @@ def enviar_respuesta_whatsapp(texto,number):
         elif "lista" in texto:
             data={
                   "messaging_product": "whatsapp",    
-                  "recipient_type": "individual",
                   "to": number,
                   "type": "interactive",
                   "interactive": {
@@ -254,6 +258,46 @@ def enviar_respuesta_whatsapp(texto,number):
                       }
                   }
               }
+        elif "bntcompra" in texto:
+            data={
+                  "messaging_product": "whatsapp",    
+                  "recipient_type": "individual",
+                  "to": number,
+                  "type": "text",
+                  "text": {
+                      "preview_url": False,
+                      "body": "Has seleccionado la opción Compra."}
+                      }
+        elif "bntventa" in texto:
+            data={
+                  "messaging_product": "whatsapp",    
+                  "recipient_type": "individual",
+                  "to": number,
+                  "type": "text",
+                  "text": {
+                      "preview_url": False,
+                      "body": "Has seleccionado la opción Venta."}
+                      }
+        elif "bntdistribucion" in texto:
+            data={
+                  "messaging_product": "whatsapp",    
+                  "recipient_type": "individual",
+                  "to": number,
+                  "type": "text",
+                  "text": {
+                      "preview_url": False,
+                      "body": "Has seleccionado la opción Distribución."}
+                      }
+        elif "bntrecogida" in texto:
+            data={
+                  "messaging_product": "whatsapp",    
+                  "recipient_type": "individual",
+                  "to": number,
+                  "type": "text",
+                  "text": {
+                      "preview_url": False,
+                      "body": "Has seleccionado la opción Recogida."}
+                      }
         else:
             data={
                   "messaging_product": "whatsapp",    
