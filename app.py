@@ -78,7 +78,14 @@ def recibir_mensaje(req):
                 agregar_mensajes_log(json.dumps(messages))
 
                 if tipo_mensaje == 'interactive':
-                    return 0
+                    tipo_interactivo = messages['interactive']['type']
+
+                    if tipo_interactivo == 'button_reply':
+                        texto_mensaje = messages['interactive']['button_reply']['id']
+                        numero_telefono = messages['from']
+                        enviar_respuesta_whatsapp(texto_mensaje,numero_telefono)                  
+
+                    
                 if "text" in messages:
                     texto_mensaje = messages['text']['body']
                     numero_telefono = messages['from']
@@ -165,21 +172,41 @@ def enviar_respuesta_whatsapp(texto,number):
                               {
                                   "type": "reply",
                                   "reply": {
-                                      "id": "option_1",
-                                      "title": "Opción 1"
+                                      "id": "bntsi",
+                                      "title": "Si"
                                   }
                               },
                               {
                                   "type": "reply",
                                   "reply": {
-                                      "id": "option_2",
-                                      "title": "Opción 2"
+                                      "id": "bntno",
+                                      "title": "No"
                                   }
                               }
                           ]
                       }
                   }
               }
+        elif "bntsi" in texto:
+            data={
+                  "messaging_product": "whatsapp",    
+                  "recipient_type": "individual",
+                  "to": number,
+                  "type": "text",
+                  "text": {
+                      "preview_url": False,
+                      "body": "Has seleccionado la opción Sí."}
+                      }
+        elif "bntno" in texto:
+            data={
+                  "messaging_product": "whatsapp",    
+                  "recipient_type": "individual",
+                  "to": number,
+                  "type": "text",
+                  "text": {
+                      "preview_url": False,
+                      "body": "Has seleccionado la opción No."}
+                      }
         else:
             data={
                   "messaging_product": "whatsapp",    
@@ -195,7 +222,7 @@ def enviar_respuesta_whatsapp(texto,number):
 
         headers = {
             "Content-Type": "application/json",
-            "Authorization": "Bearer EAAT3fcXOGLoBQrD9cJ3FFKZCGdkldvBEnTq8aDumpG9zWGjdClTTMRlhfyXOsCLXrFIZBGNSc9vIfUlFdmGuKZAdN5fWWsbMLtTBqYZAjZBLgKadePN3lGNpaHwSZAS1ujEulJ8V89PcKYoZALRWSNZACZA4dpy37R42oiDZCevsgHbHq69sM5oYzmQVG6OKdmdenRJ5Yzs0QMCTbSf3tg8HOyTG9zgZAESDD8KVg1Njx40Do8ZAyqDng4ZBtEkEJGmKpbOOo93ZA4ZA4puHt5E99WvHNxQ7FBWi61Ktf0ZD"
+            "Authorization": "Bearer EAAT3fcXOGLoBQiTaf9l2thQAnyEIEndS1ayFYJDxIVyOg1VQJE1as1xtyntIrVd4PYgnyQVSiLFR0HQqDsySZA5PKl8ekSqVcBXRI24TcZA4T6jjxxmjFguGSIdjDtcufrKg5G46vCpK3ZBBLeOMD7qvzJNZCA0o8PEuFw9zsbXZADwczxjQZB9Xn83IgYZBdwXEgeRBGXi9pZAvM3osk53011x3T4ZBzXmW8GXzB1eI61lvuI1saQIpKA6tuCKwpLRUUIk0g8HGE0qcZBeZC2Vlo0L96mvYFzAoKwZD"
             }
         
         conn = http.client.HTTPSConnection("graph.facebook.com")
