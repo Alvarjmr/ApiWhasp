@@ -207,6 +207,53 @@ def enviar_respuesta_whatsapp(texto,number):
                       "preview_url": False,
                       "body": "Has seleccionado la opción No."}
                       }
+        elif "lista" in texto:
+            data={
+                  "messaging_product": "whatsapp",    
+                  "recipient_type": "individual",
+                  "to": number,
+                  "type": "interactive",
+                  "interactive": {
+                      "type": "list",
+                      "body": {
+                          "text": "Selecciona una opción de la lista:"
+                      },
+                      "action": {
+                          "button": "Ver opciones",
+                          "sections": [
+                              {
+                                  "title": "Compra y Venta",
+                                  "rows": [
+                                      {
+                                          "id": "bntcompra",
+                                          "title": "Compra",
+                                          "description": "Comprar Articulos"
+                                      },
+                                      {
+                                          "id": "bntventa",
+                                          "title": "Venta",
+                                          "description": "Vender Articulos"
+                                      }
+                                  ]
+                              },{
+                                    "title": "Distribución y Recogida",
+                                    "rows": [
+                                        {
+                                            "id": "bntdistribucion",
+                                            "title": "Distribución",
+                                            "description": "Distribuir Articulos"
+                                        },
+                                        {
+                                            "id": "bntrecogida",
+                                            "title": "Recogida",
+                                            "description": "Recoger Articulos"
+                                        }
+                                    ]
+                              }
+                          ]
+                      }
+                  }
+              }
         else:
             data={
                   "messaging_product": "whatsapp",    
